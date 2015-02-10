@@ -66,6 +66,12 @@ statement (subject, number, gender) verb objects =
     ++ (verb number)
     ++ (concat (map (\(object, _, _) -> object Acc) objects))
 
+question :: Clause
+question (subject, number, gender) verb objects =
+       (verb number)
+    ++ (subject Nom)
+    ++ (concat (map (\(object, _, _) -> object Acc) objects))
+
 -- Helpers
 
 write :: [String] -> IO ()
