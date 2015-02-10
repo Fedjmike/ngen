@@ -23,6 +23,9 @@ cat number = let
         S -> ["Katze"]
         P -> ["Katzen"]
     in (str, number, F)
+    
+girl :: Noun
+girl number = (\_ -> ["Mädchen"], number, N)
 
 the :: Modifier
 the (object, number, gender) = let
@@ -80,5 +83,6 @@ write sentence = print (intercalate " " sentence)
 --
 
 main :: IO ()
-main = do write (statement (the (cat S)) sleeps [])
-          write (statement (the (cat S)) eats [the (cat P)])
+main = do write (statement (the (cat P)) sleeps [])
+          write (statement (the (girl S)) eats [the (cat P)])
+          write (question (the (girl P)) sleeps [])
