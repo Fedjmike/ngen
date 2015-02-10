@@ -19,39 +19,37 @@ type VerbPhrase = Object -> Verb -> [Object] -> Clause
 -- Words
 
 cat :: Noun
-cat number = let 
-    str = case number of
-        S -> \_ -> ["Katze"]
-        P -> \_ -> ["Katzen"]
+cat number = let
+    str _ = case number of
+        S -> ["Katze"]
+        P -> ["Katzen"]
     in (str, number, F)
 
 the :: Determiner
-the (sentence, number, gender) = let
-    detf = case number of
+the (object, number, gender) = let
+    detf c = case number of
         S -> case gender of
-            M -> \c -> case c of
+            M -> case c of
                 Nom -> "der"
                 Gen -> "des"
                 Dat -> "dem"
                 Acc -> "den"
-            F -> \c -> case c of
+            F -> case c of
                 Nom -> "die"
                 Gen -> "der"
                 Dat -> "der"
                 Acc -> "die"
-            N -> \c -> case c of
+            N -> case c of
                 Nom -> "das"
                 Gen -> "des"
                 Dat -> "dem"
                 Acc -> "das"
-        P -> \c -> case c of
+        P -> case c of
             Nom -> "die"
             Gen -> "der"
             Dat -> "den"
             Acc -> "die"
-    in let
-    str = \c -> (detf c) : (sentence c)
-    in (str, number, gender)
+    in (\c -> (detf c) : (object c), number, gender)
 
 sleeps :: Verb
 sleeps S = ["schlaeft"]
