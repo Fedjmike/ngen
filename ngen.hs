@@ -51,7 +51,7 @@ the (object, number, gender) = let
     in (\c -> (detf c) : (object c), number, gender)
 
 sleeps :: Verb
-sleeps S = ["schlaeft"]
+sleeps S = ["schläft"]
 sleeps P = ["schlafen"]
 
 eats :: Verb
