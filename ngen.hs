@@ -8,13 +8,12 @@ data Case = Nom | Gen | Dat | Acc
 
 -- Typedefs
 
-type Object = (Case -> [String], Number, Gender)
-type Clause = [String]
+type NounPhrase = (Case -> [String], Number, Gender)
 
-type Noun = Number -> Object
-type Determiner = Object -> Object
+type Noun = Number -> NounPhrase
+type Modifier = NounPhrase -> NounPhrase
 type Verb = Number -> [String]
-type VerbPhrase = Object -> Verb -> [Object] -> Clause
+type Clause = NounPhrase -> Verb -> [NounPhrase] -> [String]
 
 -- Words
 
@@ -25,7 +24,7 @@ cat number = let
         P -> ["Katzen"]
     in (str, number, F)
 
-the :: Determiner
+the :: Modifier
 the (object, number, gender) = let
     detf c = case number of
         S -> case gender of
@@ -61,7 +60,7 @@ eats P = ["essen"]
 
 -- Structures
 
-statement :: VerbPhrase
+statement :: Clause
 statement (subject, number, gender) verb objects =
        (subject Nom)
     ++ (verb number)
