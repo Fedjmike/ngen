@@ -7,23 +7,18 @@ import Language
 girl = noun "meisje" "meisjes" N
 
 the :: Modifier
-the (object, number, gender) = let
-    str c = case number of
-			S -> case gender of
-				N -> "het"
-				_ -> "de"
-			P -> "de"
-		: (object c)
-    in (str, number, gender)
-	
-an :: Modifier
-an (object, number, gender) = let
-	str c = case number of
-			S -> ["een"]
-			P -> []
-		++ (object c)
-	in (str, number, gender)
+the = let
+	det _ P _ = "de"
+	det _ S N = "het"
+	det _ S _ = "de"
+	in modifier det
 
+an :: Modifier
+an = let
+	det _ S _ = ["een"]
+	det _ P _ = []
+	in modifierE f
+			
 sleeps = verb "slaapt" "slaap"
 
 -- Structures

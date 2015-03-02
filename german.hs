@@ -10,30 +10,24 @@ girl = noun "mädchen" "mädchen" N
 -- capitalize nouns
 
 the :: Modifier
-the (object, number, gender) = let
-    detf c = case number of
-        S -> case gender of
-            M -> case c of
-                Nom -> "der"
-                Gen -> "des"
-                Dat -> "dem"
-                Acc -> "den"
-            F -> case c of
-                Nom -> "die"
-                Gen -> "der"
-                Dat -> "der"
-                Acc -> "die"
-            N -> case c of
-                Nom -> "das"
-                Gen -> "des"
-                Dat -> "dem"
-                Acc -> "das"
-        P -> case c of
-            Nom -> "die"
-            Gen -> "der"
-            Dat -> "den"
-            Acc -> "die"
-    in (\c -> (detf c) : (object c), number, gender)
+the = let
+	det Nom P _ = "die"
+	det Gen P _ = "der"
+	det Dat P _ = "den"
+	det Acc P _ = "die"
+	det Nom S M = "der"
+	det Gen S M = "des"
+	det Dat S M = "dem"
+	det Acc S M = "den"
+	det Nom S F = "die"
+	det Gen S F = "der"
+	det Dat S F = "der"
+	det Acc S F = "die"
+	det Nom S N = "das"
+	det Gen S N = "des"
+	det Dat S N = "dem"
+	det Acc S N = "das"
+    in modifier det
 
 sleeps = verb "schläft" "schlafen"
 eats = verb "isst" "essen"

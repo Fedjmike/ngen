@@ -34,15 +34,22 @@ girl = noun_m "girl" F
 cat = noun_m "cat" N
 
 the :: Modifier
-the (object, number, gender) = (\c -> "the" : (object c), number, gender)
+the = modifier (\_ _ _ -> "the")
 	
 an :: Modifier
+an orig @ (_, P, _) = orig
 an (object, number, gender) = let
-	str c = case number of
-			S -> ["an"]
-			P -> []
-		++ (object c)
-	in (str, number, gender)
+	newObject c = let
+		nounPhrase = object c
+		startOf ((c:_):_) = c
+		det 'a' = "an"
+		det 'e' = "an"
+		det 'i' = "an"
+		det 'o' = "an"
+		det 'u' = "an"
+		det _ = "a"
+		in  (det $ startOf nounPhrase) : nounPhrase
+	in (newObject, number, gender)
 
 sleeps = verb_m "sleep"
 eats = verb_m "eat"
