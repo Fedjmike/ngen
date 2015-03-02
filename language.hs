@@ -19,6 +19,9 @@ type Verb = Number -> [String]
 type Clause = NounPhrase -> Verb -> [NounPhrase] -> [String]
 
 nom :: NounPhrase -> [String]
+gen :: NounPhrase -> [String]
+dat :: NounPhrase -> [String]
+acc :: NounPhrase -> [String]
 nom (object, _, _) = object Nom
 gen (object, _, _) = object Gen
 dat (object, _, _) = object Dat
