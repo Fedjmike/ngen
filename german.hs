@@ -4,15 +4,10 @@ import Language
 
 -- Words
 
-cat :: Noun
-cat number = let
-    str _ = case number of
-        S -> ["Katze"]
-        P -> ["Katzen"]
-    in (str, number, F)
-    
-girl :: Noun
-girl number = (\_ -> ["Mädchen"], number, N)
+cat = noun "katze" "katzen" F
+girl = noun "mädchen" "mädchen" N
+
+-- capitalize nouns
 
 the :: Modifier
 the (object, number, gender) = let
@@ -40,13 +35,8 @@ the (object, number, gender) = let
             Acc -> "die"
     in (\c -> (detf c) : (object c), number, gender)
 
-sleeps :: Verb
-sleeps S = ["schläft"]
-sleeps P = ["schlafen"]
-
-eats :: Verb
-eats S = ["isst"]
-eats P = ["essen"]
+sleeps = verb "schläft" "schlafen"
+eats = verb "isst" "essen"
 
 -- Structures
 
@@ -54,10 +44,10 @@ statement :: Clause
 statement (subject, number, gender) verb objects =
        (subject Nom)
     ++ (verb number)
-    ++ (concat (map (\(object, _, _) -> object Acc) objects))
+    ++ (concat (map acc objects))
 
 question :: Clause
 question (subject, number, gender) verb objects =
        (verb number)
     ++ (subject Nom)
-    ++ (concat (map (\(object, _, _) -> object Acc) objects))
+    ++ (concat (map acc objects))

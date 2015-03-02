@@ -4,13 +4,7 @@ import Language
 
 -- Words
 
-girl :: Noun
-girl number = let
-	word _ = case number of
-			S -> "meisje"
-			P -> "meisjes"
-		: []
-	in (word, number, N)
+girl = noun "meisje" "meisjes" N
 
 the :: Modifier
 the (object, number, gender) = let
@@ -30,9 +24,7 @@ an (object, number, gender) = let
 		++ (object c)
 	in (str, number, gender)
 
-sleeps :: Verb
-sleeps S = ["slaapt"]
-sleeps P = ["slaap"]
+sleeps = verb "slaapt" "slaap"
 
 -- Structures
 
@@ -40,10 +32,10 @@ statement :: Clause
 statement (subject, number, gender) verb objects =
        (subject Nom)
     ++ (verb number)
-    ++ (concat (map (\(object, _, _) -> object Acc) objects))
+    ++ (concat (map acc objects))
 
 question :: Clause
 question (subject, number, gender) verb objects =
        (verb number)
     ++ (subject Nom)
-    ++ (concat (map (\(object, _, _) -> object Acc) objects))
+    ++ (concat (map acc objects))

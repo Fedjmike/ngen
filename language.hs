@@ -17,3 +17,21 @@ type Adjective = Number -> Gender -> Case -> [String]
 
 type Verb = Number -> [String]
 type Clause = NounPhrase -> Verb -> [NounPhrase] -> [String]
+
+nom :: NounPhrase -> [String]
+nom (object, _, _) = object Nom
+gen (object, _, _) = object Gen
+dat (object, _, _) = object Dat
+acc (object, _, _) = object Acc
+
+noun :: String -> String -> Gender -> Noun
+noun single plural gender = 
+	\number ->
+		(\_ -> case number of
+			S -> [single]
+			P -> [plural],
+		 number, gender)
+
+verb :: String -> String -> Verb
+verb single _ S = [single]
+verb _ plural P = [plural]
