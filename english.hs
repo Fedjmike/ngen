@@ -2,10 +2,36 @@ module English where
 
 import Language
 
+-- Morphology
+
+pluralize :: String -> String
+-- 'o' gets -es if preceded by a consonant
+pluralize "ao" = "aos"
+pluralize "eo" = "eos"
+pluralize "io" = "ios"
+pluralize "oo" = "oos"
+pluralize "uo" = "uos"
+pluralize "o" = "oes"
+-- Sibilants (air passing through teeth) also
+-- Missing: "zh" and "dg"
+-- (doesn't tend to happen without an -e though, so shouldn't be a problem)
+pluralize "s" = "ses"
+pluralize "z" = "zes"
+pluralize "sh" = "shes"
+pluralize "ch" = "ches"
+--
+pluralize "y" = "ies"
+--
+pluralize (c:[]) = c : "s"
+pluralize (c:cs) = c : pluralize cs
+
+noun_m singular = noun singular (pluralize singular)
+verb_m singular = verb (pluralize singular) singular
+
 -- Words
 
-girl = noun "girl" "girls" F
-cat = noun "cat" "cats" N
+girl = noun_m "girl" F
+cat = noun_m "cat" N
 
 the :: Modifier
 the (object, number, gender) = (\c -> "the" : (object c), number, gender)
@@ -18,8 +44,8 @@ an (object, number, gender) = let
 		++ (object c)
 	in (str, number, gender)
 
-sleeps = verb "sleeps" "sleep"
-eats = verb "eats" "eat"
+sleeps = verb_m "sleep"
+eats = verb_m "eat"
 
 -- Structures
 
