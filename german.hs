@@ -4,11 +4,6 @@ import Language
 
 -- Words
 
-cat = noun "katze" "katzen" F
-girl = noun "mädchen" "mädchen" N
-
--- capitalize nouns
-
 the :: Modifier
 the = let
 	det Nom P _ = "die"
@@ -29,19 +24,23 @@ the = let
 	det Gen S N = "des"
     in modifier det
 
+cat = noun "katze" "katzen" F
+girl = noun "mädchen" "mädchen" N
+-- TODO: capitalize nouns
+
 sleeps = verb "schläft" "schlafen"
 eats = verb "isst" "essen"
 
 -- Structures
 
 statement :: Clause
-statement (subject, number, gender) verb objects =
+statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
     ++ (concat (map acc objects))
 
 question :: Clause
-question (subject, number, gender) verb objects =
+question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)
     ++ (concat (map acc objects))

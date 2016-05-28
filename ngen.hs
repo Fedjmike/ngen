@@ -10,7 +10,9 @@ write sentence = print (intercalate " " sentence)
 
 --
 
+sentences = [statement (the (girl P)) sleeps [],
+             statement (the (girl S)) eats [the (cat S)],
+             statement (the (cat P)) sleeps []]
+		 
 main :: IO ()
-main = do write (statement (the (cat P)) sleeps [])
-          write (statement (the (girl S)) eats [the (cat P)])
-          write (question (the (girl P)) sleeps [])
+main = mapM_ write sentences

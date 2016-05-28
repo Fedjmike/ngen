@@ -30,9 +30,6 @@ verb_m singular = verb (pluralize singular) singular
 
 -- Words
 
-girl = noun_m "girl" F
-cat = noun_m "cat" N
-
 the :: Modifier
 the = modifier (\_ _ _ -> "the")
 	
@@ -51,19 +48,22 @@ an (object, number, gender) = let
 		in  (det $ startOf nounPhrase) : nounPhrase
 	in (newObject, number, gender)
 
+girl = noun_m "girl" F
+cat = noun_m "cat" N
+
 sleeps = verb_m "sleep"
 eats = verb_m "eat"
 
 -- Structures
 
 statement :: Clause
-statement (subject, number, gender) verb objects =
+statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
     ++ (concat (map acc objects))
 
 question :: Clause
-question (subject, number, gender) verb objects =
+question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)
     ++ (concat (map acc objects))
