@@ -3,8 +3,8 @@ module Language where
 -- Grammatical states
 
 data Number = S | P
-data Gender = M | F | N
-data Case = Nom | Gen | Dat | Acc
+data Gender = M | F | N deriving Eq
+data Case = Nom | Gen | Dat | Acc deriving Eq
 
 -- Typedefs
 
@@ -44,3 +44,16 @@ modifierE f (object, number, gender) = (\c -> (f c number gender) ++ (object c),
 verb :: String -> String -> Verb
 verb single _ S = [single]
 verb _ plural P = [plural]
+
+-- Morphology helpers
+
+addSpecialSuffix :: (String -> Maybe String) -> String -> String -> String
+addSpecialSuffix _ standard "" = standard
+addSpecialSuffix special standard stem@(c:cs) = case special stem of
+    Just suffix -> stem ++ suffix
+    Nothing -> c : addSpecialSuffix special standard cs
+
+addSuffix :: String -> String -> String
+addSuffix = let
+    nullSpecial _ = Nothing
+    in addSpecialSuffix nullSpecial

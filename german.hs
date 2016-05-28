@@ -2,6 +2,14 @@
 
 import Language
 
+-- Morphology
+
+eInflect = addSuffix "e"
+enInflect = addSuffix "en"
+erInflect = addSuffix "er"
+emInflect = addSuffix "em"
+esInflect = addSuffix "es"
+
 -- Words
 
 the :: Modifier
