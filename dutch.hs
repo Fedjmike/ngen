@@ -18,8 +18,10 @@ an = let
 	in modifierE f
 	
 girl = noun "meisje" "meisjes" N
+cat = noun "kat" "katten" F
 			
 sleeps = verb "slaapt" "slaap"
+eats = verb "eet" "eten"
 
 -- Structures
 
