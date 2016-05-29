@@ -2,6 +2,8 @@
 
 import Language
 
+data AdjectiveInflection = Strong | Mixed | Weak deriving Eq
+
 -- Morphology
 
 eInflect = addSuffix "e"
@@ -10,6 +12,40 @@ erInflect = addSuffix "er"
 emInflect = addSuffix "em"
 esInflect = addSuffix "es"
 
+attributiveAdjective :: String -> Number -> Gender -> Case -> AdjectiveInflection -> String
+attributiveAdjective stem number gender c inflection = let
+    e = eInflect
+    er = erInflect
+    en = enInflect
+    em = emInflect
+    es = esInflect
+
+    -- Dat|Gen
+    suffix c i number gender | c == Dat || c == Gen = case i of
+        Strong -> case (number, gender, c) of
+            (P, _, Dat) -> en
+            (P, _, Gen) -> er
+            (S, F, _) -> er
+            (S, _, Dat) -> em
+            (S, _, Gen) -> en
+        _ -> en
+        
+    -- Nom|Acc:
+    
+    suffix _ Strong P _ = e
+    suffix _ _      P _ = en
+    
+    -- Mixed|Strong M|N
+    suffix c i S gender | (i == Mixed || i == Strong) && (gender == M || gender == N) = case (c, gender) of
+        (Nom, M) -> er
+        (Acc, M) -> en
+        (_, N) -> es
+    
+    suffix Acc _ S M = en
+    suffix _   _ S _ = e
+    
+    in (suffix c inflection number gender) stem
+   
 -- Words
 
 the :: Modifier
