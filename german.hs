@@ -14,22 +14,19 @@ esInflect = addSuffix "es"
 
 the :: Modifier
 the = let
-	det Nom P _ = "die"
-	det Acc P _ = "die"
-	det Dat P _ = "den"
-	det Gen P _ = "der"
-	det Nom S M = "der"
-	det Acc S M = "den"
-	det Dat S M = "dem"
-	det Gen S M = "des"
-	det Nom S F = "die"
-	det Acc S F = "die"
-	det Dat S F = "der"
-	det Gen S F = "der"
-	det Nom S N = "das"
-	det Acc S N = "das"
-	det Dat S N = "dem"
-	det Gen S N = "des"
+    det c number gender | c == Nom || c == Acc = case (c, number, gender) of
+        (Nom, S, M) -> "der"
+        (Acc, S, M) -> "den"
+        (_, S, N) -> "das"
+        _ -> "die"
+        
+    det c _ gender | gender == M || gender == N = case c of
+        Dat -> "dem"
+        Acc -> "des"
+        
+    det Dat P _ = "den"
+    det _ _ _ = "der"
+    
     in modifier det
 
 cat = noun "katze" "katzen" F
