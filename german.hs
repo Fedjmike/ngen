@@ -12,6 +12,29 @@ erInflect = addSuffix "er"
 emInflect = addSuffix "em"
 esInflect = addSuffix "es"
 
+--  M      N       F      P
+-- male neutral femaleOrPlural
+--  en
+--     em         er      en
+--     es             er
+article :: (String, String, String, String, String, String, String) -> Case -> Number -> Gender -> String
+article (male, neutral, femaleOrPlural, en, em, es, er) =
+    let declined c number gender | c == Dat || c == Gen = case (c, number, gender) of
+            (c, S, gender) | gender == M || gender == N -> case c of
+                Dat -> em
+                Gen -> es
+                
+            (Dat, P, _) -> en
+            _ -> er
+        
+        -- Nom|Acc
+        declined Nom S M = male
+        declined Acc S M = en
+        declined _   S N = neutral
+        declined _ _ _ = femaleOrPlural
+        
+    in declined
+
 attributiveAdjective :: String -> Number -> Gender -> Case -> AdjectiveInflection -> String
 attributiveAdjective stem number gender c inflection = let
     e = eInflect
@@ -48,22 +71,11 @@ attributiveAdjective stem number gender c inflection = let
    
 -- Words
 
-the :: Modifier
-the = let
-    det c number gender | c == Nom || c == Acc = case (c, number, gender) of
-        (Nom, S, M) -> "der"
-        (Acc, S, M) -> "den"
-        (_, S, N) -> "das"
-        _ -> "die"
-        
-    det c _ gender | gender == M || gender == N = case c of
-        Dat -> "dem"
-        Acc -> "des"
-        
-    det Dat P _ = "den"
-    det _ _ _ = "der"
-    
-    in modifier det
+definiteArticle = article ("der", "das", "die", "den", "dem", "des", "der")
+indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "einer")
+
+the = modifier definiteArticle
+an = modifier indefiniteArticle
 
 cat = noun "katze" "katzen" F
 girl = noun "mädchen" "mädchen" N
