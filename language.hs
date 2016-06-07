@@ -2,10 +2,10 @@ module Language where
 
 -- Grammatical states
 
-data Number = S | P
-data Gender = M | F | N deriving Eq
-data Case = Nom | Gen | Dat | Acc deriving Eq
-data Person = FirstPerson | SecondPerson | ThirdPerson
+data Number = S | P deriving (Show, Eq)
+data Gender = M | F | N deriving (Show, Eq)
+data Case = Nom | Gen | Dat | Acc deriving (Show, Eq)
+data Person = FirstPerson | SecondPerson | ThirdPerson deriving (Show, Eq)
 
 -- Typedefs
 
@@ -19,14 +19,10 @@ type Adjective = Number -> Gender -> Case -> [String]
 type Verb = Number -> [String]
 type Clause = NounPhrase -> Verb -> [NounPhrase] -> [String]
 
-nom :: NounPhrase -> [String]
-gen :: NounPhrase -> [String]
-dat :: NounPhrase -> [String]
-acc :: NounPhrase -> [String]
-nom (object, _, _) = object Nom
-gen (object, _, _) = object Gen
-dat (object, _, _) = object Dat
-acc (object, _, _) = object Acc
+nom, acc, dat, gen :: NounPhrase -> [String]
+[nom, acc, dat, gen] =
+    let applyCase c (object, _, _, _) = object c
+    in map applyCase [Nom, Acc, Dat, Gen]
 
 noun :: String -> String -> Gender -> Noun
 noun single plural gender = 

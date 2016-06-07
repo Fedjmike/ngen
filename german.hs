@@ -19,7 +19,8 @@ esInflect = addSuffix "es"
 --     es             er
 article :: (String, String, String, String, String, String, String) -> Number -> Gender -> Case -> String
 article (male, neutral, femaleOrPlural, en, em, es, er) =
-    let declined number gender c | c == Dat || c == Gen = case (c, number, gender) of
+    let -- Dat|Gen
+        declined number gender c | c == Dat || c == Gen = case (c, number, gender) of
             (c, S, gender) | gender == M || gender == N -> case c of
                 Dat -> em
                 Gen -> es
@@ -71,6 +72,12 @@ attributiveAdjective stem number gender c inflection = let
    
 -- Words
 
+definiteArticle = article ("der", "das", "die", "den", "dem", "des", "der")
+indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "einer")
+
+the = modifier definiteArticle
+an = modifier indefiniteArticle
+
 personalPronoun :: Number -> Gender -> Person -> Case -> String
 -- Third person pronouns are fairly article-like
 personalPronoun number gender ThirdPerson c = case (number, gender, c) of
@@ -102,12 +109,6 @@ personalPronoun P _ person c =
         FirstPerson -> pronoun "wir" "uns" "unser"
         SecondPerson -> pronoun "ihr" "euch" "euer"
         
-definiteArticle = article ("der", "das", "die", "den", "dem", "des", "der")
-indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "einer")
-
-the = modifier definiteArticle
-an = modifier indefiniteArticle
-
 cat = noun "katze" "katzen" F
 girl = noun "mädchen" "mädchen" N
 -- TODO: capitalize nouns
@@ -121,10 +122,10 @@ statement :: Clause
 statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
-    ++ (concat (map acc objects))
+    ++ (concatMap acc objects)
 
 question :: Clause
 question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)
-    ++ (concat (map acc objects))
+    ++ (concatMap acc objects)
