@@ -36,11 +36,11 @@ noun single plural gender =
 			P -> [plural],
 		 number, gender)
 
-modifier :: (Case -> Number -> Gender -> String) -> Modifier
-modifier f (object, number, gender) = (\c -> (f c number gender) : (object c), number, gender)
+modifier :: (Number -> Gender -> Case -> String) -> Modifier
+modifier f (object, number, gender) = (\c -> f number gender c : object c, number, gender)
 
-modifierE :: (Case -> Number -> Gender -> [String]) -> Modifier
-modifierE f (object, number, gender) = (\c -> (f c number gender) ++ (object c), number, gender)
+modifierE :: (Number -> Gender -> Case -> [String]) -> Modifier
+modifierE f (object, number, gender) = (\c -> f number gender c ++ object c, number, gender)
 
 verb :: String -> String -> Verb
 verb single _ S = [single]

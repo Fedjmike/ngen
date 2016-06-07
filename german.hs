@@ -17,9 +17,9 @@ esInflect = addSuffix "es"
 --  en
 --     em         er      en
 --     es             er
-article :: (String, String, String, String, String, String, String) -> Case -> Number -> Gender -> String
+article :: (String, String, String, String, String, String, String) -> Number -> Gender -> Case -> String
 article (male, neutral, femaleOrPlural, en, em, es, er) =
-    let declined c number gender | c == Dat || c == Gen = case (c, number, gender) of
+    let declined number gender c | c == Dat || c == Gen = case (c, number, gender) of
             (c, S, gender) | gender == M || gender == N -> case c of
                 Dat -> em
                 Gen -> es
@@ -28,9 +28,9 @@ article (male, neutral, femaleOrPlural, en, em, es, er) =
             _ -> er
         
         -- Nom|Acc
-        declined Nom S M = male
-        declined Acc S M = en
-        declined _   S N = neutral
+        declined S M Nom = male
+        declined S M Acc = en
+        declined S N _ = neutral
         declined _ _ _ = femaleOrPlural
         
     in declined
@@ -71,18 +71,18 @@ attributiveAdjective stem number gender c inflection = let
    
 -- Words
 
-personalPronoun :: Number -> Gender -> Case -> Person -> String
+personalPronoun :: Number -> Gender -> Person -> Case -> String
 -- Third person pronouns are fairly article-like
-personalPronoun number gender c ThirdPerson = case (number, gender, c) of
+personalPronoun number gender ThirdPerson c = case (number, gender, c) of
     (S, F, Dat) -> "ihr"
     (P, _, Dat) -> "ihnen"
-    _ -> article ("er", "es", "sie", "ihn", "ihm", "seiner", "ihrer") c number gender
+    _ -> article ("er", "es", "sie", "ihn", "ihm", "seiner", "ihrer") number gender c
 
-personalPronoun S _ Nom FirstPerson = "ich"
-personalPronoun S _ Nom SecondPerson = "du"
+personalPronoun S _ FirstPerson Nom = "ich"
+personalPronoun S _ SecondPerson Nom = "du"
 
 -- Singular pronouns follow a pattern of the stem indicating person and a suffix for case
-personalPronoun S _ c person =
+personalPronoun S _ person c =
     let stem FirstPerson = "m"
         stem SecondPerson = "d"
         
@@ -92,7 +92,7 @@ personalPronoun S _ c person =
         Gen -> "einer"
     
 -- Plural pronouns are not very patternful
-personalPronoun P _ c person =
+personalPronoun P _ person c =
     let pronoun nom obj gen = case c of
             Nom -> nom
             Gen -> gen
