@@ -44,7 +44,7 @@ attributiveAdjective stem number gender c inflection = let
     es = esInflect
 
     -- Dat|Gen
-    suffix c i number gender | c == Dat || c == Gen = case i of
+    suffix number gender c i | c == Dat || c == Gen = case i of
         -- In the case of no article, the adjective itself resembles an article
         Strong -> case (number, gender, c) of
             (S, F, _) -> er
@@ -56,8 +56,8 @@ attributiveAdjective stem number gender c inflection = let
         
     -- Nom|Acc:
     
-    suffix _ Strong P _ = e
-    suffix _ _      P _ = en
+    suffix P _ _ Strong = e
+    suffix P _ _ _ = en
     
     -- Mixed|Strong M|N
     -- Resembles the same corner in article declension (der/den + das)
@@ -67,10 +67,10 @@ attributiveAdjective stem number gender c inflection = let
         (M, Acc) -> en
         (N, _) -> es
     
-    suffix Acc _ S M = en
-    suffix _   _ S _ = e
+    suffix S M Acc _ = en
+    suffix S _ _ _ = e
     
-    in (suffix c inflection number gender) stem
+    in (suffix number gender c inflection) stem
    
 -- Words
 
