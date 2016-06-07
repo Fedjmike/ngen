@@ -20,13 +20,12 @@ esInflect = addSuffix "es"
 article :: (String, String, String, String, String, String, String) -> Number -> Gender -> Case -> String
 article (male, neutral, femaleOrPlural, en, em, es, er) =
     let -- Dat|Gen
-        declined number gender c | c == Dat || c == Gen = case (c, number, gender) of
-            (c, S, gender) | gender == M || gender == N -> case c of
-                Dat -> em
-                Gen -> es
-                
-            (Dat, P, _) -> en
-            _ -> er
+        declined number gender c | c == Dat || c == Gen = case (number, gender, c) of
+            (S, F, _) -> er
+            (S, _, Dat) -> em
+            (S, _, Gen) -> es
+            (P, _, Dat) -> en
+            (P, _, Gen) -> er
         
         -- Nom|Acc
         declined S M Nom = male
@@ -46,12 +45,13 @@ attributiveAdjective stem number gender c inflection = let
 
     -- Dat|Gen
     suffix c i number gender | c == Dat || c == Gen = case i of
+        -- In the case of no article, the adjective itself resembles an article
         Strong -> case (number, gender, c) of
-            (P, _, Dat) -> en
-            (P, _, Gen) -> er
             (S, F, _) -> er
             (S, _, Dat) -> em
             (S, _, Gen) -> en
+            (P, _, Dat) -> en
+            (P, _, Gen) -> er
         _ -> en
         
     -- Nom|Acc:
@@ -60,10 +60,12 @@ attributiveAdjective stem number gender c inflection = let
     suffix _ _      P _ = en
     
     -- Mixed|Strong M|N
-    suffix c i S gender | (i == Mixed || i == Strong) && (gender == M || gender == N) = case (c, gender) of
-        (Nom, M) -> er
-        (Acc, M) -> en
-        (_, N) -> es
+    -- Resembles the same corner in article declension (der/den + das)
+    -- Provides gender and case information that would otherwise come from the definite article
+    suffix S gender c i | (i == Mixed || i == Strong) && (gender == M || gender == N) = case (gender, c) of
+        (M, Nom) -> er
+        (M, Acc) -> en
+        (N, _) -> es
     
     suffix Acc _ S M = en
     suffix _   _ S _ = e
