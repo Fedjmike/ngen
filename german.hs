@@ -71,6 +71,37 @@ attributiveAdjective stem number gender c inflection = let
    
 -- Words
 
+personalPronoun :: Number -> Gender -> Case -> Person -> String
+-- Third person pronouns are fairly article-like
+personalPronoun number gender c ThirdPerson = case (number, gender, c) of
+    (S, F, Dat) -> "ihr"
+    (P, _, Dat) -> "ihnen"
+    _ -> article ("er", "es", "sie", "ihn", "ihm", "seiner", "ihrer") c number gender
+
+personalPronoun S _ Nom FirstPerson = "ich"
+personalPronoun S _ Nom SecondPerson = "du"
+
+-- Singular pronouns follow a pattern of the stem indicating person and a suffix for case
+personalPronoun S _ c person =
+    let stem FirstPerson = "m"
+        stem SecondPerson = "d"
+        
+    in stem person ++ case c of
+        Acc -> "ich"
+        Dat -> "ir"
+        Gen -> "einer"
+    
+-- Plural pronouns are not very patternful
+personalPronoun P _ c person =
+    let pronoun nom obj gen = case c of
+            Nom -> nom
+            Gen -> gen
+            _ -> obj
+        
+    in case person of
+        FirstPerson -> pronoun "wir" "uns" "unser"
+        SecondPerson -> pronoun "ihr" "euch" "euer"
+        
 definiteArticle = article ("der", "das", "die", "den", "dem", "des", "der")
 indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "einer")
 

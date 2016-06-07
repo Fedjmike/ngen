@@ -5,6 +5,7 @@ module Language where
 data Number = S | P
 data Gender = M | F | N deriving Eq
 data Case = Nom | Gen | Dat | Acc deriving Eq
+data Person = FirstPerson | SecondPerson | ThirdPerson
 
 -- Typedefs
 
