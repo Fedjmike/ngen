@@ -19,8 +19,13 @@ byStress _ unstr   Unstressed = unstr
 
 articleLike :: String -> String -> Number -> Gender -> Dutch.Case -> String
 articleLike _ het   S N _ = het
-articleLike de _    S _ _ = de
-articleLike de _    P _ _ = de
+articleLike de _    _ _ _ = de
+
+-- Conjugation
+
+verb :: String -> String -> Verb
+verb single _   S _ = [single]
+verb _ plural   P _ = [plural]
 
 -- Words
 

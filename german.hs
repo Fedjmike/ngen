@@ -134,13 +134,13 @@ eats = verb "isst" "essen"
 
 -- Structures
 
-statement :: Clause
+statement :: Clause German.Case
 statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
     ++ (concatMap acc objects)
 
-question :: Clause
+question :: Clause German.Case
 question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)

@@ -10,11 +10,6 @@ instance Language.Case English.Case
 isVowel c = c `elem` "aeiou"
 isConsonant = not . isVowel
 
--- Declension
-
-byCase nom _   Nom = nom
-byCase _ acc   Acc = acc
-
 -- Morphology
 
 pluralize :: String -> String
@@ -38,10 +33,21 @@ pluralize "y" = "ies"
 pluralize (c:[]) = c : "s"
 pluralize (c:cs) = c : pluralize cs
 
-noun_m :: String -> Noun English.Case
-noun_m singular = noun singular (pluralize singular) N
+-- Declension
 
-verb_m singular = verb (pluralize singular) singular
+byCase nom _   Nom = nom
+byCase _ acc   Acc = acc
+
+noun :: String -> Noun English.Case
+noun singular = Language.noun singular (pluralize singular) N
+
+-- Conjugation
+
+irregularVerb :: String -> String -> Verb
+irregularVerb single _   S = [single]
+irregularVerb _ plural   P = [plural]
+
+verb singular = irregularVerb (pluralize singular) singular
 
 -- Words
 
@@ -62,11 +68,11 @@ personalPronoun ThirdPerson _ N = \c -> "it"
 personalPronoun ThirdPerson _ M = byCase "he" "him"
 personalPronoun ThirdPerson _ F = byCase "she" "her"
 
-girl = noun_m "girl"
-cat = noun_m "cat"
+girl = English.noun "girl"
+cat = English.noun "cat"
 
-sleeps = verb_m "sleep"
-eats = verb_m "eat"
+sleeps = verb "sleep"
+eats = verb "eat"
 
 -- Structures
 
