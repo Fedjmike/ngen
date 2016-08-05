@@ -32,11 +32,17 @@ noun single plural gender =
 			P -> [plural],
 		 number, gender)
 
-modifier :: Case c => (Number -> Gender -> c -> String) -> Modifier c
-modifier f (object, number, gender) = (\c -> f number gender c : object c, number, gender)
+-- Extend a NounPhrase by providing a function that maps between the old and new sentence fragment
+extendNP :: Case c => (Number -> Gender -> c -> [String] -> [String]) -> Modifier c
+extendNP f (object, n, g) = (\c -> f n g c $ object c, n, g)
 
+-- A simpler form for functions that just give words to be added before the fragment
 modifierE :: Case c => (Number -> Gender -> c -> [String]) -> Modifier c
-modifierE f (object, number, gender) = (\c -> f number gender c ++ object c, number, gender)
+modifierE f = extendNounPhrase (\n g c o -> f n g c ++ o)
+
+-- Simpler still, for functions that give a single word
+modifier :: Case c => (Number -> Gender -> c -> String) -> Modifier c
+modifier f = modifierE (\n g c -> [f n g c])
 
 verb :: String -> String -> Verb
 verb single _ S = [single]

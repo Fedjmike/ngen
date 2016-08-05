@@ -7,6 +7,9 @@ instance Language.Case English.Case
 
 (nom, acc) = fmap applyCase (Nom, Acc)
 
+isVowel c = c `elem` "aeiou"
+isConsonant = not . isVowel
+
 -- Declension
 
 byCase nom _   Nom = nom
@@ -41,23 +44,13 @@ verb_m singular = verb (pluralize singular) singular
 
 -- Words
 
-the :: Modifier English.Case
+the, an :: Modifier English.Case
 the = modifier (\_ _ _ -> "the")
-	
-an :: Modifier English.Case
-an orig @ (_, P, _) = orig
-an (object, number, gender) = let
-	newObject c = let
-		nounPhrase = object c
-		startOf ((c:_):_) = c
-		det 'a' = "an"
-		det 'e' = "an"
-		det 'i' = "an"
-		det 'o' = "an"
-		det 'u' = "an"
-		det _ = "a"
-		in  (det $ startOf nounPhrase) : nounPhrase
-	in (newObject, number, gender)
+
+an = extendNP $ \number _ _ noun ->
+    let firstLetter = head.head
+        determiner = if isVowel $ firstLetter noun then "an" else "a"
+    in if number == P then noun else determiner : noun
 
 personalPronoun :: Person -> Number -> Gender -> English.Case -> String
 personalPronoun FirstPerson S _ = byCase "I" "me"
