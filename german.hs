@@ -105,17 +105,18 @@ personalPronoun ThirdPerson number gender c = case (number, gender, c) of
     _ -> article ("er", "es", "sie", "ihn", "ihm", "seiner", "ihrer") number gender c
 
 -- The formal pronoun is the third person plural, capitalised
-personalPronoun SecondPersonFormal _ _ c = capitalize $ personalPronoun ThirdPerson P N c
+personalPronoun SecondPersonFormal _ _ c =
+    capitalize $ personalPronoun ThirdPerson P N c
 
 personalPronoun FirstPerson  S _ Nom = "ich"
 personalPronoun SecondPerson S _ Nom = "du"
 
 -- Singular pronouns follow a pattern of the stem indicating person and a suffix for case
 personalPronoun person S _ c =
-    let stem FirstPerson = "m"
-        stem SecondPerson = "d"
-        
-    in stem person ++ case c of
+    case person of
+        FirstPerson -> "m"
+        SecondPerson -> "d"
+    ++ case c of
         Acc -> "ich"
         Dat -> "ir"
         Gen -> "einer"
