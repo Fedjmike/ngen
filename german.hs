@@ -1,5 +1,6 @@
 ﻿module German where
 
+import Data.Char
 import Language
 
 data Case = Nom | Acc | Dat | Gen deriving (Show, Eq)
@@ -18,10 +19,15 @@ byCase _ _ _ gen   Gen = gen
 -- Morphology
 
 eInflect = addSuffix "e"
+stInflect = addSuffix "st"
+tInflect = addSuffix "t"
 enInflect = addSuffix "en"
 erInflect = addSuffix "er"
 emInflect = addSuffix "em"
 esInflect = addSuffix "es"
+
+capitalize [] = []
+capitalize (c:cs) = toUpper c : cs
 
 --  M      N       F      P
 -- male neutral femaleOrPlural
