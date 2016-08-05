@@ -7,6 +7,11 @@ instance Language.Case English.Case
 
 (nom, acc) = fmap applyCase (Nom, Acc)
 
+-- Declension
+
+byCase nom _   Nom = nom
+byCase _ acc   Acc = acc
+
 -- Morphology
 
 pluralize :: String -> String
@@ -53,6 +58,15 @@ an (object, number, gender) = let
 		det _ = "a"
 		in  (det $ startOf nounPhrase) : nounPhrase
 	in (newObject, number, gender)
+
+personalPronoun :: Person -> Number -> Gender -> English.Case -> String
+personalPronoun FirstPerson S _ = byCase "I" "me"
+personalPronoun FirstPerson P _ = byCase "we" "us"
+personalPronoun SecondPerson _ _ = \c -> "you"
+personalPronoun ThirdPerson P _ = \c -> "they"
+personalPronoun ThirdPerson _ N = \c -> "it"
+personalPronoun ThirdPerson _ M = byCase "he" "him"
+personalPronoun ThirdPerson _ F = byCase "she" "her"
 
 girl = noun_m "girl" F
 cat = noun_m "cat" N
