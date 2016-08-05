@@ -4,27 +4,27 @@ module Language where
 
 data Number = S | P deriving (Show, Eq)
 data Gender = M | F | N deriving (Show, Eq)
-data Case = Nom | Gen | Dat | Acc deriving (Show, Eq)
 data Person = FirstPerson | SecondPerson | ThirdPerson deriving (Show, Eq)
+
+-- This typeclass links the cases of different languages
+class Case c
 
 -- Typedefs
 
-type NounPhrase = (Case -> [String], Number, Gender)
+type NounPhrase c = (c -> [String], Number, Gender)
 
-type Noun = Number -> NounPhrase
-type Modifier = NounPhrase -> NounPhrase
+type Noun c = Number -> NounPhrase c
+type Modifier c = NounPhrase c -> NounPhrase c
 
-type Adjective = Number -> Gender -> Case -> [String]
+type Adjective c = Number -> Gender -> c -> [String]
 
 type Verb = Number -> [String]
-type Clause = NounPhrase -> Verb -> [NounPhrase] -> [String]
+type Clause c = NounPhrase c -> Verb -> [NounPhrase c] -> [String]
 
-nom, acc, dat, gen :: NounPhrase -> [String]
-[nom, acc, dat, gen] =
-    let applyCase c (object, _, _, _) = object c
-    in map applyCase [Nom, Acc, Dat, Gen]
+applyCase :: Case c => c -> NounPhrase c -> [String]
+applyCase c (object, _, _) = object c
 
-noun :: String -> String -> Gender -> Noun
+noun :: Case c => String -> String -> Gender -> Noun c
 noun single plural gender = 
 	\number ->
 		(\_ -> case number of
@@ -32,10 +32,10 @@ noun single plural gender =
 			P -> [plural],
 		 number, gender)
 
-modifier :: (Number -> Gender -> Case -> String) -> Modifier
+modifier :: Case c => (Number -> Gender -> c -> String) -> Modifier c
 modifier f (object, number, gender) = (\c -> f number gender c : object c, number, gender)
 
-modifierE :: (Number -> Gender -> Case -> [String]) -> Modifier
+modifierE :: Case c => (Number -> Gender -> c -> [String]) -> Modifier c
 modifierE f (object, number, gender) = (\c -> f number gender c ++ object c, number, gender)
 
 verb :: String -> String -> Verb

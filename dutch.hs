@@ -2,6 +2,11 @@ module Dutch where
 
 import Language
 
+data Case = Nom | Acc deriving (Show, Eq)
+instance Language.Case Dutch.Case
+
+(nom, acc) = fmap applyCase (Nom, Acc)
+
 -- Words
 
 the :: Modifier

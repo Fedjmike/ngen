@@ -2,6 +2,11 @@ module English where
 
 import Language
 
+data Case = Nom | Acc deriving (Show, Eq)
+instance Language.Case English.Case
+
+(nom, acc) = fmap applyCase (Nom, Acc)
+
 -- Morphology
 
 pluralize :: String -> String
@@ -25,15 +30,16 @@ pluralize "y" = "ies"
 pluralize (c:[]) = c : "s"
 pluralize (c:cs) = c : pluralize cs
 
+noun_m :: String -> Gender -> Noun English.Case
 noun_m singular = noun singular (pluralize singular)
 verb_m singular = verb (pluralize singular) singular
 
 -- Words
 
-the :: Modifier
+the :: Modifier English.Case
 the = modifier (\_ _ _ -> "the")
 	
-an :: Modifier
+an :: Modifier English.Case
 an orig @ (_, P, _) = orig
 an (object, number, gender) = let
 	newObject c = let
@@ -56,13 +62,13 @@ eats = verb_m "eat"
 
 -- Structures
 
-statement :: Clause
+statement :: Clause English.Case
 statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
     ++ (concat (map acc objects))
 
-question :: Clause
+question :: Clause English.Case
 question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)

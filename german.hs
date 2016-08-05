@@ -2,7 +2,13 @@
 
 import Language
 
+data Case = Nom | Gen | Dat | Acc deriving (Show, Eq)
+instance Language.Case German.Case
+
 data AdjectiveInflection = Strong | Mixed | Weak deriving Eq
+
+nom, acc, dat, gen :: NounPhrase -> [String]
+(nom, acc, dat, gen) = fmap applyCase (Nom, Acc, Dat, Gen)
 
 -- Morphology
 
@@ -17,7 +23,7 @@ esInflect = addSuffix "es"
 --  en
 --     em         er      en
 --     es             er
-article :: (String, String, String, String, String, String, String) -> Number -> Gender -> Case -> String
+article :: (String, String, String, String, String, String, String) -> Number -> Gender -> German.Case -> String
 article (male, neutral, femaleOrPlural, en, em, es, er) =
     let -- Dat|Gen
         declined number gender c | c == Dat || c == Gen = case (number, gender, c) of
@@ -35,7 +41,7 @@ article (male, neutral, femaleOrPlural, en, em, es, er) =
         
     in declined
 
-attributiveAdjective :: String -> Number -> Gender -> Case -> AdjectiveInflection -> String
+attributiveAdjective :: String -> Number -> Gender -> German.Case -> AdjectiveInflection -> String
 attributiveAdjective stem number gender c inflection = let
     e = eInflect
     er = erInflect
@@ -80,7 +86,7 @@ indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "e
 the = modifier definiteArticle
 an = modifier indefiniteArticle
 
-personalPronoun :: Number -> Gender -> Person -> Case -> String
+personalPronoun :: Number -> Gender -> Person -> German.Case -> String
 -- Third person pronouns are fairly article-like
 personalPronoun number gender ThirdPerson c = case (number, gender, c) of
     (S, F, Dat) -> "ihr"
