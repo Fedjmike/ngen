@@ -29,21 +29,21 @@ indefiniteArticle _ _ _ = "een"
 
 [the, an] = map modifier [definiteArticle, indefiniteArticle]
 
-personalPronoun :: Number -> Gender -> Person -> Stress -> Dutch.Case -> String
-personalPronoun number _ FirstPerson = flip $ case number of
+personalPronoun :: Person -> Number -> Gender -> Stress -> Dutch.Case -> String
+personalPronoun FirstPerson number _ = flip $ case number of
     S -> byCase (byStress "ik" "'k")
                 (byStress "mij" "me")
     P -> byCase (byStress "wij" "we")
                 (\_ -> "ons")
 
-personalPronoun number _ SecondPerson = \stress c -> case (number, stress) of
+personalPronoun SecondPerson number _ = \stress c -> case (number, stress) of
     (S, Stressed) -> byCase "jij" "jou" c
     (P, Stressed) -> "jullie"
     (_, Unstressed) -> "je"
     
-personalPronoun _ _ SecondPersonFormal = \stress -> byCase "u" "uw"
+personalPronoun SecondPersonFormal _ _ = \stress -> byCase "u" "uw"
     
-personalPronoun number gender ThirdPerson = flip $ \c -> case (number, gender, c) of
+personalPronoun ThirdPerson number gender = flip $ \c -> case (number, gender, c) of
     (S, M, Nom) -> byStress "hij" "ie"
     (S, M, Acc) -> byStress "hem" "'m"
     -- N doesn't vary by case

@@ -91,21 +91,21 @@ indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "e
 the = modifier definiteArticle
 an = modifier indefiniteArticle
 
-personalPronoun :: Number -> Gender -> Person -> German.Case -> String
+personalPronoun :: Person -> Number -> Gender -> German.Case -> String
 -- Third person pronouns are fairly article-like
-personalPronoun number gender ThirdPerson c = case (number, gender, c) of
+personalPronoun ThirdPerson number gender c = case (number, gender, c) of
     (S, F, Dat) -> "ihr"
     (P, _, Dat) -> "ihnen"
     _ -> article ("er", "es", "sie", "ihn", "ihm", "seiner", "ihrer") number gender c
 
 -- The formal pronoun is the third person plural, capitalised
-personalPronoun _ _ SecondPersonFormal c = capitalize $ personalPronoun P N ThirdPerson c
+personalPronoun SecondPersonFormal _ _ c = capitalize $ personalPronoun ThirdPerson P N c
 
-personalPronoun S _ FirstPerson Nom = "ich"
-personalPronoun S _ SecondPerson Nom = "du"
+personalPronoun FirstPerson  S _ Nom = "ich"
+personalPronoun SecondPerson S _ Nom = "du"
 
 -- Singular pronouns follow a pattern of the stem indicating person and a suffix for case
-personalPronoun S _ person c =
+personalPronoun person S _ c =
     let stem FirstPerson = "m"
         stem SecondPerson = "d"
         
@@ -115,8 +115,8 @@ personalPronoun S _ person c =
         Gen -> "einer"
     
 -- Plural pronouns are not very patternful
-personalPronoun P _ FirstPerson c = byCase "wir" "uns" "uns" "unser" c
-personalPronoun P _ SecondPerson c = byCase "ihr" "euch" "euch" "euer" c
+personalPronoun FirstPerson  P _ c = byCase "wir" "uns" "uns" "unser" c
+personalPronoun SecondPerson P _ c = byCase "ihr" "euch" "euch" "euer" c
 
 cat = noun "katze" "katzen" F
 girl = noun "mädchen" "mädchen" N
