@@ -115,16 +115,9 @@ personalPronoun S _ person c =
         Gen -> "einer"
     
 -- Plural pronouns are not very patternful
-personalPronoun P _ person c =
-    let pronoun nom obj gen = case c of
-            Nom -> nom
-            Gen -> gen
-            _ -> obj
-        
-    in case person of
-        FirstPerson -> pronoun "wir" "uns" "unser"
-        SecondPerson -> pronoun "ihr" "euch" "euer"
-        
+personalPronoun P _ FirstPerson c = byCase "wir" "uns" "uns" "unser" c
+personalPronoun P _ SecondPerson c = byCase "ihr" "euch" "euch" "euer" c
+
 cat = noun "katze" "katzen" F
 girl = noun "mädchen" "mädchen" N
 -- TODO: capitalize nouns
