@@ -1,5 +1,7 @@
 module Language where
 
+import Control.Spoon -- spoon
+
 -- Grammatical states
 
 data Number = S | P deriving (Show, Eq)
@@ -46,13 +48,13 @@ modifier f = modifierE (\n g c -> [f n g c])
 
 -- Morphology helpers
 
-addSpecialSuffix :: (String -> Maybe String) -> String -> String -> String
-addSpecialSuffix _ standard "" = standard
-addSpecialSuffix special standard stem@(c:cs) = case special stem of
-    Just suffix -> stem ++ suffix
-    Nothing -> c : addSpecialSuffix special standard cs
+addSpecialSuffix :: String -> (String -> Maybe String) -> String -> String
+addSpecialSuffix standard _ "" = standard
+addSpecialSuffix standard special stem@(c:cs) = case special stem of
+    Just suffix -> suffix
+    Nothing -> c : addSpecialSuffix standard special cs
 
 addSuffix :: String -> String -> String
-addSuffix = let
-    nullSpecial _ = Nothing
-    in addSpecialSuffix nullSpecial
+addSuffix suffix = addSpecialSuffix suffix (\_ -> Nothing)
+
+maybeize f = \x -> spoon $ f x

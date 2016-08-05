@@ -12,26 +12,13 @@ isConsonant = not . isVowel
 
 -- Morphology
 
-pluralize :: String -> String
--- 'o' gets -es if preceded by a consonant
-pluralize "ao" = "aos"
-pluralize "eo" = "eos"
-pluralize "io" = "ios"
-pluralize "oo" = "oos"
-pluralize "uo" = "uos"
-pluralize "o" = "oes"
--- Sibilants (air passing through teeth) also
--- Missing: "zh" and "dg"
--- (doesn't tend to happen without an -e though, so shouldn't be a problem)
-pluralize "s" = "ses"
-pluralize "z" = "zes"
-pluralize "sh" = "shes"
-pluralize "ch" = "ches"
---
-pluralize "y" = "ies"
---
-pluralize (c:[]) = c : "s"
-pluralize (c:cs) = c : pluralize cs
+pluralize =
+    let special "y" = "ies"
+        -- 'o' gets -es if preceded by a consonant
+        special (c:"o") | isConsonant c = c:"oes"
+        -- Sibilants (air passing through teeth) also
+        special str | str `elem` ["s", "z", "sh", "ch"] = str ++ "es"
+    in addSpecialSuffix "s" $ maybeize special
 
 -- Declension
 
