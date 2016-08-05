@@ -7,21 +7,20 @@ instance Language.Case Dutch.Case
 
 (nom, acc) = fmap applyCase (Nom, Acc)
 
+-- Declension
+
+articleLike :: String -> String -> Number -> Gender -> Dutch.Case -> String
+articleLike _  het S N _ = het
+articleLike de _   S _ _ = de
+articleLike de _   P _ _ = de
+
 -- Words
 
-the :: Modifier
-the = let
-	det _ P _ = "de"
-	det _ S N = "het"
-	det _ S _ = "de"
-	in modifier det
+definiteArticle = articleLike "de" "het"
+indefiniteArticle _ _ _ = "een"
 
-an :: Modifier
-an = let
-	det _ S _ = ["een"]
-	det _ P _ = []
-	in modifierE f
-	
+[the, an] = map modifier [definiteArticle, indefiniteArticle]
+
 girl = noun "meisje" "meisjes" N
 cat = noun "kat" "katten" F
 			
