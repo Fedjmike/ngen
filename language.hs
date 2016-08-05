@@ -4,7 +4,7 @@ module Language where
 
 data Number = S | P deriving (Show, Eq)
 data Gender = M | F | N deriving (Show, Eq)
-data Person = FirstPerson | SecondPerson | ThirdPerson deriving (Show, Eq)
+data Person = FirstPerson | SecondPerson | SecondPersonFormal | ThirdPerson deriving (Show, Eq)
 
 -- This typeclass links the cases of different languages
 class Case c
