@@ -2,13 +2,18 @@
 
 import Language
 
-data Case = Nom | Gen | Dat | Acc deriving (Show, Eq)
+data Case = Nom | Acc | Dat | Gen deriving (Show, Eq)
 instance Language.Case German.Case
 
 data AdjectiveInflection = Strong | Mixed | Weak deriving Eq
 
-nom, acc, dat, gen :: NounPhrase -> [String]
-(nom, acc, dat, gen) = fmap applyCase (Nom, Acc, Dat, Gen)
+nom, acc, dat, gen :: NounPhrase German.Case -> [String]
+[nom, acc, dat, gen] = map applyCase [Nom, Acc, Dat, Gen]
+
+byCase nom _ _ _   Nom = nom
+byCase _ acc _ _   Acc = acc
+byCase _ _ dat _   Dat = dat
+byCase _ _ _ gen   Gen = gen
 
 -- Morphology
 

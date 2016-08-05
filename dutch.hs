@@ -10,9 +10,9 @@ instance Language.Case Dutch.Case
 -- Declension
 
 articleLike :: String -> String -> Number -> Gender -> Dutch.Case -> String
-articleLike _  het S N _ = het
-articleLike de _   S _ _ = de
-articleLike de _   P _ _ = de
+articleLike _ het   S N _ = het
+articleLike de _    S _ _ = de
+articleLike de _    P _ _ = de
 
 -- Words
 
@@ -23,19 +23,19 @@ indefiniteArticle _ _ _ = "een"
 
 girl = noun "meisje" "meisjes" N
 cat = noun "kat" "katten" F
-			
+
 sleeps = verb "slaapt" "slaap"
 eats = verb "eet" "eten"
 
 -- Structures
 
-statement :: Clause
+statement :: Clause Dutch.Case
 statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
     ++ (concat (map acc objects))
 
-question :: Clause
+question :: Clause Dutch.Case
 question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)
