@@ -38,8 +38,9 @@ pluralize "y" = "ies"
 pluralize (c:[]) = c : "s"
 pluralize (c:cs) = c : pluralize cs
 
-noun_m :: String -> Gender -> Noun English.Case
-noun_m singular = noun singular (pluralize singular)
+noun_m :: String -> Noun English.Case
+noun_m singular = noun singular (pluralize singular) N
+
 verb_m singular = verb (pluralize singular) singular
 
 -- Words
@@ -61,8 +62,8 @@ personalPronoun ThirdPerson _ N = \c -> "it"
 personalPronoun ThirdPerson _ M = byCase "he" "him"
 personalPronoun ThirdPerson _ F = byCase "she" "her"
 
-girl = noun_m "girl" F
-cat = noun_m "cat" N
+girl = noun_m "girl"
+cat = noun_m "cat"
 
 sleeps = verb_m "sleep"
 eats = verb_m "eat"
