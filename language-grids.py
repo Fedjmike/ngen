@@ -199,35 +199,34 @@ def index():
                    for articles, adjectives in zip(process_emph(articleses), process_emph(adjectiveses))]
     
     def print_adjectives(adjectives, wide_tables=False):
-        html = "<div class=\"adjectives by-inflection\">"
-        
-        for adjs, inflection in zip(adjectives, inflection_classes):
-            html += tag("p", "%s:" % inflection, _class="tight")
-            html += grid(["M", "N", "F", "P"], cases, combine_repeats(process_emph(adjs), wide=wide_tables)
-            html += "<br/>"
+        def print_grids(_class, h_labels, v_labels, data, odd_vertical_combine=False):
+            html = ""
             
-        html += "</div>"
+            for adjs, title in data:
+                html += tag("p", "%s:" % title, _class="tight")
+                html += grid(h_labels, v_labels,
+                             combine_repeats(process_emph(adjs), odd_vertical_combine),
+                             wide=wide_tables)
+                html += "<br/>"
+                
+            return tag("div", html, _class="adjectives " + _class)
         
-        html += "<div class=\"adjectives by-gender\">"
-            
+        html = print_grids("by-inflection", ["M", "N", "F", "P"], cases,
+                           zip(adjectives, inflection_classes))
+        
         # I x C x G => G x C x I
-        for adjs, gender in zip([zip(*x) for x in zip(*[zip(*x) for x in adjectives])], ["M", "N", "F", "P"]):
-            html += tag("p", "%s:" % gender, _class="tight")
-            html += grid(inflection_classes, cases, combine_repeats(process_emph(adjs), odd_vertical_combine=True), wide=wide_tables)
-            html += "<br/>"
-            
-        html += "</div>"
+        html += print_grids("by-gender", inflection_classes, cases,
+                            zip([zip(*x) for x in
+                                 zip(*[zip(*x) for x in adjectives])],
+                                ["M", "N", "F", "P"]),
+                            odd_vertical_combine=True)
         
-        html += "<div class=\"adjectives by-case\">"
-            
         # I x C x G => C x I x G
-        for adjs, gender in zip(zip(*adjectives), cases):
-            html += tag("p", "%s:" % gender, _class="tight")
-            html += grid(["M", "N", "F", "P"], inflection_classes, combine_repeats(process_emph(adjs), odd_vertical_combine=True), wide=wide_tables)
-            html += "<br/>"
+        html += print_grids("by-case",
+                            ["M", "N", "F", "P"], inflection_classes,
+                            zip(zip(*adjectives), cases),
+                            odd_vertical_combine=True)
         
-        html += "</div>"
-            
         return html
         
     articles_and_adjectives = list(combine_articles([definite_articles, indefinite_articles, None], adjectives))
