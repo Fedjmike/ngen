@@ -1,0 +1,72 @@
+* {
+    font-family: "segoe ui";
+}
+
+html {
+    color: #333;
+}
+
+.emph {
+    font-weight: bold;
+}
+
+p.tight {
+    margin: 0.5em 0;
+}
+
+label {
+    
+}
+
+input[type=radio],
+input[type=checkbox] {
+    width: 0;
+}
+
+label input + * {
+    padding: 0.1em 0.4em;
+    border: 1px solid white;
+}
+
+label:hover input + * {
+    border: 1px solid #eee;
+    cursor: pointer;
+}
+
+label input:checked + * {
+    border: 1px solid #ddd;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+td {
+    min-width: 3rem;
+    padding: 0.25rem 0.45rem;
+    border: 1px solid #eee;
+}
+
+table.wide td:not(.vlabel):not(.pivot) {
+    width: 5.5rem;
+}
+
+table .vlabel {
+    text-align: right;
+    line-height: 1.35rem;
+    vertical-align: bottom;
+}
+
+table .vlabel, table .hlabel {
+    color: #777;
+    font-size: 10pt;
+}
+
+table .pivot {border: none;}
+
+.column {
+    display: inline-block;
+    vertical-align: top;
+    margin: 0 1em;
+}
