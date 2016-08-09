@@ -135,16 +135,17 @@ def grid(h_labels, v_labels, grid, wide=False):
     return tag("table", h_axis, *rows, _class="wide" if wide else "")
     
 def process_emph(grid):
+    """Placing a * in a cell emphasises all content after, or + before"""
+    
     def do(cell):
-        if "*" in cell:
-            index = cell.find("*")
-            return cell[:index] + "<span class=\"emph\">" + cell[index+1:] + "</span>"
+        try:
+            before, c, after = \
+                next(cell.partition(c) for c in ["*", "+"] if c in cell)
             
-        elif "+" in cell:
-            index = cell.find("+")
-            return "<span class=\"emph\">" + cell[:index] + "</span>" + cell[index+1:]
-            
-        else:
+            return      before + tag("em", after) if c == "*" \
+                   else tag("em", before) + after
+        
+        except StopIteration:
             return cell
     
     return [[do(cell) for cell in row] for row in grid]

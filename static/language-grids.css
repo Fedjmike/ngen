@@ -6,8 +6,9 @@ html {
     color: #333;
 }
 
-.emph {
+table em {
     font-weight: bold;
+    font-style: normal;
 }
 
 p.tight {
