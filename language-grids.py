@@ -16,6 +16,8 @@ indefinite_articles = [
     ["ein*es","ein*es","ein*er"]
 ]
 
+inflection_classes = ["Weak", "Mixed", "Strong"]
+
 adjectives = [
     [["alt*e","alt*e","alt*e","alt*en"],
      ["alt*en","alt*e","alt*e","alt*en"],
@@ -93,7 +95,7 @@ def combine_repeats(grid, odd_vertical_combine=False):
         return [list(x) for x in zip(*newgrid)]
         
     def combine_horizontally(grid):
-        for row in grid:            
+        for row in grid:
             for colno, cell in enumerate(row):
                 cell, colspan, rowspan = unpack_cell(cell)
                 
@@ -187,8 +189,6 @@ def index():
     html += tag("label", tag("input", type="radio", name="adjectives", value="by-gender"), tag("span", "gender/number"))
     html += tag("label", tag("input", type="radio", name="adjectives", value="by-case"), tag("span", "case"))
     html += "</p>"
-    
-    inflection_classes = ["Weak", "Mixed", "Strong"]
     
     def combine_articles(articleseses, adjectiveseses):
         for articleses, adjectiveses in zip(articleseses, adjectiveseses):

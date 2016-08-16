@@ -16,7 +16,7 @@ byCase _ acc _ _   Acc = acc
 byCase _ _ dat _   Dat = dat
 byCase _ _ _ gen   Gen = gen
 
--- Morphology
+---- Morphology ----
 
 eInflect = addSuffix "e"
 stInflect = addSuffix "st"
@@ -88,14 +88,13 @@ attributiveAdjective stem number gender c inflection = let
     suffix S _ _ _ = e
     
     in (suffix number gender c inflection) stem
-   
--- Words
+
+---- Words ----
 
 definiteArticle = article ("der", "das", "die", "den", "dem", "des", "der")
 indefiniteArticle = article ("ein", "ein", "eine", "einen", "einem", "eines", "einer")
 
-the = modifier definiteArticle
-an = modifier indefiniteArticle
+[the, an] = map modifier [definiteArticle, indefiniteArticle]
 
 personalPronoun :: Person -> Number -> Gender -> German.Case -> String
 -- Third person pronouns are fairly article-like
@@ -132,7 +131,7 @@ girl = noun "mädchen" "mädchen" N
 sleeps = verb "schläft" "schlafen"
 eats = verb "isst" "essen"
 
--- Structures
+---- Structures ----
 
 statement :: Clause German.Case
 statement (subject, number, _) verb objects =
@@ -142,6 +141,7 @@ statement (subject, number, _) verb objects =
 
 question :: Clause German.Case
 question (subject, number, _) verb objects =
+    -- Verb first
        (verb number)
     ++ (subject Nom)
     ++ (concatMap acc objects)

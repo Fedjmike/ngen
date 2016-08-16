@@ -10,7 +10,7 @@ instance Language.Case English.Case
 isVowel c = c `elem` "aeiou"
 isConsonant = not . isVowel
 
--- Morphology
+---- Morphology ----
 
 pluralize =
     let special "y" = "ies"
@@ -20,7 +20,7 @@ pluralize =
         special str | str `elem` ["s", "z", "sh", "ch"] = str ++ "es"
     in addSpecialSuffix "s" $ maybeize special
 
--- Declension
+---- Declension ----
 
 byCase nom _   Nom = nom
 byCase _ acc   Acc = acc
@@ -28,23 +28,24 @@ byCase _ acc   Acc = acc
 noun :: String -> Noun English.Case
 noun singular = Language.noun singular (pluralize singular) N
 
--- Conjugation
+---- Conjugation ----
 
 irregularVerb :: String -> String -> Verb
 irregularVerb single _   S = [single]
 irregularVerb _ plural   P = [plural]
 
-verb singular = irregularVerb (pluralize singular) singular
+-- The singular looks like a plural form of the verb
+verb stem = irregularVerb (pluralize stem) stem
 
--- Words
+---- Words ----
 
 the, an :: Modifier English.Case
 the = modifier (\_ _ _ -> "the")
 
-an = extendNP $ \number _ _ noun ->
-    let firstLetter = head.head
-        determiner = if isVowel $ firstLetter noun then "an" else "a"
-    in if number == P then noun else determiner : noun
+an = extendNP $ \number _ _ phrase ->
+    let firstLetter = head.head phrase
+        determiner = if isVowel firstLetter then "an" else "a"
+    in if number == P then phrase else determiner : phrase
 
 personalPronoun :: Person -> Number -> Gender -> English.Case -> String
 personalPronoun FirstPerson S _ = byCase "I" "me"
@@ -61,16 +62,16 @@ cat = English.noun "cat"
 sleeps = verb "sleep"
 eats = verb "eat"
 
--- Structures
+---- Structures ----
 
 statement :: Clause English.Case
 statement (subject, number, _) verb objects =
        (subject Nom)
     ++ (verb number)
-    ++ (concat (map acc objects))
+    ++ (concatMap acc objects)
 
 question :: Clause English.Case
 question (subject, number, _) verb objects =
        (verb number)
     ++ (subject Nom)
-    ++ (concat (map acc objects))
+    ++ (concatMap acc objects)

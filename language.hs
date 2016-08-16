@@ -2,7 +2,7 @@ module Language where
 
 import Control.Spoon -- spoon
 
--- Grammatical states
+---- Grammatical states ----
 
 data Number = S | P deriving (Show, Eq)
 data Gender = M | F | N deriving (Show, Eq)
@@ -11,7 +11,7 @@ data Person = FirstPerson | SecondPerson | SecondPersonFormal | ThirdPerson deri
 -- This typeclass links the cases of different languages
 class Case c
 
--- Typedefs
+---- Typedefs ----
 
 type NounPhrase c = (c -> [String], Number, Gender)
 
@@ -46,7 +46,7 @@ modifierE f = extendNP (\n g c o -> f n g c ++ o)
 modifier :: Case c => (Number -> Gender -> c -> String) -> Modifier c
 modifier f = modifierE (\n g c -> [f n g c])
 
--- Morphology helpers
+---- Morphology helpers ----
 
 addSpecialSuffix :: String -> (String -> Maybe String) -> String -> String
 addSpecialSuffix standard _ "" = standard

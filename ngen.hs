@@ -3,16 +3,16 @@
 import Language
 import German
 
--- Helpers
+---- Helpers ----
 
 write :: [String] -> IO ()
-write sentence = print (intercalate " " sentence)
+write phrase = print (intercalate " " phrase)
 
---
+----
 
-sentences = [statement (the (girl P)) sleeps [],
-             statement (the (girl S)) eats [the (cat S)],
-             statement (the (cat P)) sleeps []]
+sentences = [statement (the $ girl P) sleeps [],
+             statement (the $ girl S) eats [the $ cat S],
+             statement (the $ cat P) sleeps []]
 		 
 main :: IO ()
 main = mapM_ write sentences
