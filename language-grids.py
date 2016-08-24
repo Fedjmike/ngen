@@ -1,54 +1,6 @@
 from itertools import count, zip_longest
 
-cases = ["Nominative", "Accusative", "Dative", "Genitive"]
-
-definite_articles = [
-    ["der","das","die","die"],
-    ["de*n","das","die","die"],
-    ["de*m","de*m","de*r","de*n"],
-    ["de*s","de*s","de*r","de*r"]
-]
-
-indefinite_articles = [
-    ["ein","ein","eine"],
-    ["ein*en","ein","eine"],
-    ["ein*em","ein*em","ein*er"],
-    ["ein*es","ein*es","ein*er"]
-]
-
-inflection_classes = ["Weak", "Mixed", "Strong"]
-
-adjectives = [
-    [["alt*e","alt*e","alt*e","alt*en"],
-     ["alt*en","alt*e","alt*e","alt*en"],
-     ["alt*en","alt*en","alt*en","alt*en"],
-     ["alt*en","alt*en","alt*en","alt*en"]],
-    [["alt*er","alt*es","alt*e","alt*en"],
-     ["alt*en","alt*es","alt*e","alt*en"],
-     ["alt*en","alt*en","alt*en","alt*en"],
-     ["alt*en","alt*en","alt*en","alt*en"]],
-    [["alt*er","alt*es","alt*e","alt*e"],
-     ["alt*en","alt*es","alt*e","alt*e"],
-     ["alt*em","alt*em","alt*er","alt*en"],
-     ["alt*en","alt*en","alt*er","alt*er"]]
-]
-
-pronoun_kinds = [("1st Person", ["S", "P"]), ("2nd Person", ["S", "P", "Formal"]), ("3rd Person", ["M", "N", "F", "P"])]
-pronoun_cases = ["Nominative", "Accusative", "Dative", "Genitive", "Possessive"]
-
-pronouns = list(zip(*[
-    ["ich", "mi*ch", "mi*r", "mein*er", "mei*n-"],
-    ["wir", "uns", "uns", "unser", "unser*-"],
-    
-    ["du", "di*ch", "di*r", "dein*er", "dei*n-"],
-    ["ihr", "euch", "euch", "euer", "euer*-"],
-    ["Sie", "Sie", "Ihnen", "Ihr*er", "Ihr*-"],
-    
-    ["er", "ihn", "ihm", "sein*er", "sei*n-"],
-    ["es", "es", "ihm", "sein*er", "sei*n-"],
-    ["sie", "sie", "ihr", "ihr*er", "ihr*-"],
-    ["sie", "sie", "ihnen", "ihr*er", "ihr*-"]
-]))
+from german_tables import *
 
 def tag(tag, *content, **fields):
     field_str = "".join(" %s=\"%s\"" % ("class" if key == "_class" else key, value) for key, value in fields.items())
