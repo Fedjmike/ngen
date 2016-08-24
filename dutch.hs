@@ -46,7 +46,7 @@ personalPronoun SecondPerson number _ = \stress c -> case (number, stress) of
     (P, Stressed) -> "jullie"
     (_, Unstressed) -> "je"
     
-personalPronoun SecondPersonFormal _ _ = \stress -> byCase "u" "uw"
+personalPronoun SecondPersonFormal _ _ = \stress c -> "u"
     
 personalPronoun ThirdPerson number gender = flip $ \c -> case (number, gender, c) of
     (S, M, Nom) -> byStress "hij" "ie"
