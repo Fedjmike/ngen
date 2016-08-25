@@ -52,6 +52,11 @@ personalPronoun ThirdPerson number gender = flip $ \c -> case (number, gender, c
     (S, F, Acc) -> byStress "haar" "'r"
     (P, _, Acc) -> byStress "hen" "ze"
 
+( who,   whose,   what,  why,      how,   when,      where_) =
+ ("wie", "wiens", "wat", "waroom", "hoe", "wanneer", "waar")
+
+which = articleLike "welk" "welke"
+
 girl = noun "meisje" "meisjes" N
 cat = noun "kat" "katten" F
 
@@ -67,6 +72,8 @@ verb single plural = simpleVerb plural single plural
 
 sleeps = verb "slaapt" "slaap"
 eats = verb "eet" "eten"
+
+has = simpleVerb "heb" "heeft" "hebben"
 
 ---- Structures ----
 

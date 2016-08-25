@@ -64,6 +64,8 @@ verb stem = simpleVerb stem (pluralize stem) stem
 sleeps = verb "sleep"
 eats = verb "eat"
 
+is = simpleVerb "am" "is" "are"
+
 ---- Structures ----
 
 statement :: Clause English.Case
