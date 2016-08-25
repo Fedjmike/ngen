@@ -62,7 +62,7 @@ cat = noun "kat" "katten" F
 
 ---- Verb conjugation ----
 
-simpleVerb first _ _    S FirstPerson = first
+simpleVerb first _ _    S FirstPerson = [first]
 simpleVerb _ single _   S _ = [single]
 simpleVerb _ _ plural   P _ = [plural]
 
