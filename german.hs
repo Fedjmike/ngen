@@ -192,7 +192,7 @@ has = strongVerb "hab" "ha"
 sleeps = strongVerb "schlaf" "schläf"
 eats = strongVerb "ess" "iss"
 comes = strongVerb "komm" "komm"
-knows = strongVerb "weiß" "wiss"
+knows = simpleVerb "weiß" "weißt" "weiß" "wissen" "wisst"
 says = weakVerb "sag"
 
 ---- Structures ----
