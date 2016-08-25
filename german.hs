@@ -18,10 +18,25 @@ byCase _ _ _ gen   Gen = gen
 
 ---- Morphology ----
 
+enInflect =
+    let special str | str `elem` ["e", "el", "er"] = str ++ "n"
+        special "en" = "en"
+    in addSpecialSuffix "en" $ maybeize special
+
+stInflect = 
+    let special c | c `elem` ["s", "ß", "z"] = c ++ "t"
+        special "t" = "test"
+    in addSpecialSuffix "st" $ maybeize special
+
+tInflect = 
+    let special "t" = "tet"
+    in addSpecialSuffix "t" $ maybeize special
+
+teInflect = 
+    let special "t" = "tete"
+    in addSpecialSuffix "te" $ maybeize special
+
 eInflect = addSuffix "e"
-stInflect = addSuffix "st"
-tInflect = addSuffix "t"
-enInflect = addSuffix "en"
 erInflect = addSuffix "er"
 emInflect = addSuffix "em"
 esInflect = addSuffix "es"
