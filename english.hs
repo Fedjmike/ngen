@@ -28,15 +28,6 @@ byCase _ acc   Acc = acc
 noun :: String -> Noun English.Case
 noun singular = Language.noun singular (pluralize singular) N
 
----- Conjugation ----
-
-irregularVerb :: String -> String -> Verb
-irregularVerb single _   S = [single]
-irregularVerb _ plural   P = [plural]
-
--- The singular looks like a plural form of the verb
-verb stem = irregularVerb (pluralize stem) stem
-
 ---- Words ----
 
 the, an :: Modifier English.Case
@@ -59,19 +50,30 @@ personalPronoun ThirdPerson _ F = byCase "she" "her"
 girl = English.noun "girl"
 cat = English.noun "cat"
 
+---- Verb conjugation ----
+
+simpleVerb singleFirstPerson _ _   S FirstPerson = [singleFirstPerson]
+simpleVerb _ singleThirdPerson _   S ThirdPerson = [singleThirdPerson]
+simpleVerb _ _ secondOrPlural      _ _ = [secondOrPlural]
+
+-- The single third person looks like a plural form of the verb
+verb stem = simpleVerb stem (pluralize stem) stem
+
+---- Words ----
+
 sleeps = verb "sleep"
 eats = verb "eat"
 
 ---- Structures ----
 
 statement :: Clause English.Case
-statement (subject, number, _) verb objects =
+statement (subject, number, _, person) verb objects =
        (subject Nom)
-    ++ (verb number)
+    ++ (verb number person)
     ++ (concatMap acc objects)
 
 question :: Clause English.Case
-question (subject, number, _) verb objects =
-       (verb number)
+question (subject, number, _, person) verb objects =
+       (verb number person)
     ++ (subject Nom)
     ++ (concatMap acc objects)

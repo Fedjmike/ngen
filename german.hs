@@ -124,20 +124,47 @@ cat = noun "katze" "katzen" F
 girl = noun "mädchen" "mädchen" N
 -- TODO: capitalize nouns
 
-sleeps = verb "schläft" "schlafen"
-eats = verb "isst" "essen"
+---- Verb conjugation ----
+
+-- Simple verbs are conjugated for person/number
+-- The most irregular have five forms   e.g. bin bist ist sind seid
+simpleVerb first second third plural secondPlural   number person = case (number, person) of    
+    (S, FirstPerson) -> [first]
+    (S, SecondPerson) -> [second]
+    (P, SecondPerson) -> [secondPlural]
+    (S, ThirdPerson) -> [third]
+    (P, _) -> [plural]
+    (_, SecondPersonFormal) -> [plural]
+
+-- Verbs are conjugated with -e, -en, -st, or -t and may have a stem change
+verbWithStemChange firstOrPlural secondOrThirdSingle = 
+    simpleVerb (eInflect firstOrPlural)
+               (stInflect secondOrThirdSingle) (tInflect secondOrThirdSingle)
+               (enInflect firstOrPlural) (tInflect firstOrPlural)
+
+-- Strong verbs have a change of stem
+strongVerb firstOrPlural secondOrThirdSingle =
+    verbWithStemChange firstOrPlural secondOrThirdSingle
+
+-- Weak verbs are completely regular, all forms are based on one stem
+weakVerb stem = verbWithStemChange stem stem
+
+---- Words ----
+
+sleeps = strongVerb "schlaf" "schläf"
+eats = strongVerb "ess" "iss"
 
 ---- Structures ----
 
 statement :: Clause German.Case
-statement (subject, number, _) verb objects =
+statement (subject, number, _, person) verb objects =
        (subject Nom)
-    ++ (verb number)
+    ++ (verb number person)
     ++ (concatMap acc objects)
 
 question :: Clause German.Case
-question (subject, number, _) verb objects =
+question (subject, number, _, person) verb objects =
     -- Verb first
-       (verb number)
+       (verb number person)
     ++ (subject Nom)
     ++ (concatMap acc objects)

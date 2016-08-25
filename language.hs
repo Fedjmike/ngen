@@ -13,18 +13,18 @@ class Case c
 
 ---- Typedefs ----
 
-type NounPhrase c = (c -> [String], Number, Gender)
+type NounPhrase c = (c -> [String], Number, Gender, Person)
 
 type Noun c = Number -> NounPhrase c
 type Modifier c = NounPhrase c -> NounPhrase c
 
 type Adjective c = Number -> Gender -> c -> [String]
 
-type Verb = Number -> [String]
+type Verb = Number -> Person -> [String]
 type Clause c = NounPhrase c -> Verb -> [NounPhrase c] -> [String]
 
 applyCase :: Case c => c -> NounPhrase c -> [String]
-applyCase c (object, _, _) = object c
+applyCase c (object, _, _, _) = object c
 
 noun :: Case c => String -> String -> Gender -> Noun c
 noun single plural gender = 
@@ -32,11 +32,11 @@ noun single plural gender =
 		(\_ -> case number of
 			S -> [single]
 			P -> [plural],
-		 number, gender)
+		 number, gender, ThirdPerson)
 
 -- Extend a NounPhrase by providing a function that maps between the old and new sentence fragment
 extendNP :: Case c => (Number -> Gender -> c -> [String] -> [String]) -> Modifier c
-extendNP f (object, n, g) = (\c -> f n g c $ object c, n, g)
+extendNP f (object, n, g, p) = (\c -> f n g c $ object c, n, g, p)
 
 -- A simpler form for functions that just give words to be added before the fragment
 modifierE :: Case c => (Number -> Gender -> c -> [String]) -> Modifier c

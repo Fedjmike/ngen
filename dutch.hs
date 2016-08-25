@@ -21,12 +21,6 @@ articleLike :: String -> String -> Number -> Gender -> Dutch.Case -> String
 articleLike _ het   S N _ = het
 articleLike de _    _ _ _ = de
 
----- Conjugation ----
-
-verb :: String -> String -> Verb
-verb single _   S _ = [single]
-verb _ plural   P _ = [plural]
-
 ---- Words ----
 
 definiteArticle = articleLike "de" "het"
@@ -61,19 +55,29 @@ personalPronoun ThirdPerson number gender = flip $ \c -> case (number, gender, c
 girl = noun "meisje" "meisjes" N
 cat = noun "kat" "katten" F
 
+---- Verb conjugation ----
+
+simpleVerb first _ _    S FirstPerson = first
+simpleVerb _ single _   S _ = [single]
+simpleVerb _ _ plural   P _ = [plural]
+
+verb single plural = simpleVerb plural single plural
+
+---- Words ----
+
 sleeps = verb "slaapt" "slaap"
 eats = verb "eet" "eten"
 
 ---- Structures ----
 
 statement :: Clause Dutch.Case
-statement (subject, number, _) verb objects =
+statement (subject, number, _, person) verb objects =
        (subject Nom)
-    ++ (verb number)
+    ++ (verb number person)
     ++ (concatMap acc objects)
 
 question :: Clause Dutch.Case
-question (subject, number, _) verb objects =
-       (verb number)
+question (subject, number, _, person) verb objects =
+       (verb number person)
     ++ (subject Nom)
     ++ (concatMap acc objects)
