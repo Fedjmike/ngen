@@ -53,41 +53,37 @@ article (male, neutral, femaleOrPlural, en, em, es, er) =
     in declined
 
 attributiveAdjective :: String -> Number -> Gender -> German.Case -> AdjectiveInflection -> String
-attributiveAdjective stem number gender c inflection = let
-    e = eInflect
-    er = erInflect
-    en = enInflect
-    em = emInflect
-    es = esInflect
-
-    -- Dat|Gen
-    suffix number gender c i | c == Dat || c == Gen = case i of
-        -- In the case of no article, the adjective itself resembles an article
-        Strong -> case (number, gender, c) of
-            (S, F, _) -> er
-            (S, _, Dat) -> em
-            (S, _, Gen) -> en
-            (P, _, Dat) -> en
-            (P, _, Gen) -> er
-        _ -> en
+attributiveAdjective stem =
+    let (e, er, en, em, es) = (eInflect stem, erInflect stem, enInflect stem, emInflect stem, esInflect stem)
+    
+        -- Dat|Gen
+        declined number gender c i | c == Dat || c == Gen = case i of
+            -- In the case of no article, the adjective itself resembles an article
+            Strong -> case (number, gender, c) of
+                (S, F, _) -> er
+                (S, _, Dat) -> em
+                (S, _, Gen) -> en
+                (P, _, Dat) -> en
+                (P, _, Gen) -> er
+            _ -> en
+            
+        -- Nom|Acc:
         
-    -- Nom|Acc:
-    
-    suffix P _ _ Strong = e
-    suffix P _ _ _ = en
-    
-    -- Mixed|Strong M|N
-    -- Resembles the same corner in article declension (der/den + das)
-    -- Provides gender and case information that would otherwise come from the definite article
-    suffix S gender c i | (i == Mixed || i == Strong) && (gender == M || gender == N) = case (gender, c) of
-        (M, Nom) -> er
-        (M, Acc) -> en
-        (N, _) -> es
-    
-    suffix S M Acc _ = en
-    suffix S _ _ _ = e
-    
-    in (suffix number gender c inflection) stem
+        declined P _ _ Strong = e
+        declined P _ _ _ = en
+        
+        -- Mixed|Strong M|N
+        -- Resembles the same corner in article declension (der/den + das)
+        -- Provides gender and case information that would otherwise come from the definite article
+        declined S gender c i | (i == Mixed || i == Strong) && (gender == M || gender == N) = case (gender, c) of
+            (M, Nom) -> er
+            (M, Acc) -> en
+            (N, _) -> es
+        
+        declined S M Acc _ = en
+        declined S _ _ _ = e
+        
+    in declined
 
 ---- Words ----
 

@@ -43,7 +43,7 @@ the, an :: Modifier English.Case
 the = modifier (\_ _ _ -> "the")
 
 an = extendNP $ \number _ _ phrase ->
-    let firstLetter = head.head phrase
+    let firstLetter = head $ head phrase
         determiner = if isVowel firstLetter then "an" else "a"
     in if number == P then phrase else determiner : phrase
 
