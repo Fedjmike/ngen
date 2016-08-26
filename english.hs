@@ -47,6 +47,13 @@ personalPronoun ThirdPerson _ N = \c -> "it"
 personalPronoun ThirdPerson _ M = byCase "he" "him"
 personalPronoun ThirdPerson _ F = byCase "she" "her"
 
+[i, we, you, he, it, she, they] =
+    [(\c -> [personalPronoun p n g c], n, g, p)
+     | (p, n, g) <-    [(FirstPerson, n, N) | n <- [S, P]]
+                    ++ [(SecondPerson, S, N)]
+                    ++ [(ThirdPerson, n, g) | (n, g) <- [(S, M), (S, N),
+                                                         (S, F), (P, N)]]]
+
 girl = English.noun "girl"
 cat = English.noun "cat"
 
@@ -65,6 +72,7 @@ sleeps = verb "sleep"
 eats = verb "eat"
 
 is = simpleVerb "am" "is" "are"
+has = simpleVerb "have" "has" "have"
 
 ---- Structures ----
 
