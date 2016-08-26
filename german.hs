@@ -11,12 +11,12 @@ data AdjectiveInflection = Strong | Mixed | Weak deriving Eq
 nom, acc, dat, gen :: NounPhrase German.Case -> [String]
 [nom, acc, dat, gen] = map applyCase [Nom, Acc, Dat, Gen]
 
-byCase nom _ _ _   Nom = nom
-byCase _ acc _ _   Acc = acc
-byCase _ _ dat _   Dat = dat
-byCase _ _ _ gen   Gen = gen
-
 ---- Morphology ----
+
+eInflect = addSuffix "e"
+erInflect = addSuffix "er"
+emInflect = addSuffix "em"
+esInflect = addSuffix "es"
 
 enInflect =
     let special str | str `elem` ["e", "el", "er"] = str ++ "n"
@@ -32,17 +32,17 @@ tInflect =
     let special "t" = "tet"
     in addSpecialSuffix "t" $ maybeize special
 
-teInflect = 
-    let special "t" = "tete"
-    in addSpecialSuffix "te" $ maybeize special
-
-eInflect = addSuffix "e"
-erInflect = addSuffix "er"
-emInflect = addSuffix "em"
-esInflect = addSuffix "es"
+teInflect = eInflect . tInflect
 
 capitalize [] = []
 capitalize (c:cs) = toUpper c : cs
+
+---- Declension ----
+
+byCase nom _ _ _   Nom = nom
+byCase _ acc _ _   Acc = acc
+byCase _ _ dat _   Dat = dat
+byCase _ _ _ gen   Gen = gen
 
 --  M      N       F      P
 -- male neutral femaleOrPlural

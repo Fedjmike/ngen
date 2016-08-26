@@ -38,13 +38,9 @@ noun single plural gender =
 extendNP :: Case c => (Number -> Gender -> c -> [String] -> [String]) -> Modifier c
 extendNP f (object, n, g, p) = (\c -> f n g c $ object c, n, g, p)
 
--- A simpler form for functions that just give words to be added before the fragment
-modifierE :: Case c => (Number -> Gender -> c -> [String]) -> Modifier c
-modifierE f = extendNP (\n g c o -> f n g c ++ o)
-
--- Simpler still, for functions that give a single word
+-- A simpler form for functions that just give a word to be added before the fragment
 modifier :: Case c => (Number -> Gender -> c -> String) -> Modifier c
-modifier f = modifierE (\n g c -> [f n g c])
+modifier f = extendNP (\n g c o -> f n g c : o)
 
 ---- Morphology helpers ----
 
@@ -58,3 +54,7 @@ addSuffix :: String -> String -> String
 addSuffix suffix = addSpecialSuffix suffix (\_ -> Nothing)
 
 maybeize f = \x -> spoon $ f x
+
+---- ----
+
+write phrase = print (intercalate " " phrase)
