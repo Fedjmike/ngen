@@ -19,42 +19,32 @@ def tr(*content):
     return tag("tr", *content)
     
 def combine_repeats(grid, odd_vertical_combine=False):
-    def combine_vertically(grid):
-        newgrid = []
+    def convert(grid):
+        """Turns each cell into [contents, colspan, rowspan]"""
+        return [[[cell, 1, 1] for cell in row] for row in grid]
         
-        for column in zip(*grid):
-            newcolumn = []
+    def rotate_grid(grid):
+        """Rotates the grid so that columns become rows, and colspans become rowspans"""
+        def rotate_cell(cell):
+            if cell:
+                contents, width, height = cell
+                return [contents, height, width]
             
-            for rowno, cell in enumerate(column):
-                newcell = [cell, 1, 1]
+            else:
+                return None
                 
-                try:
-                    for backtrack in count(-1, -1):
-                        if newcolumn[backtrack]:
-                            if newcolumn[backtrack][0] == cell and (rowno % 2 == 1 or odd_vertical_combine):
-                                newcolumn[backtrack][2] += 1
-                                newcell = None
-                            
-                            break
-                            
-                except IndexError:
-                    pass
-                    
-                newcolumn.append(newcell)
-            
-            newgrid.append(newcolumn)
-            
-        return [list(x) for x in zip(*newgrid)]
+        return [[rotate_cell(cell) for cell in row]
+                for row in zip(*grid)]
         
-    def combine_horizontally(grid):
+    def combine_horizontally(grid, odd_combine=True):
         for row in grid:
             for colno, cell in enumerate(row):
                 cell, colspan, rowspan = unpack_cell(cell)
                 
                 try:
-                    for backtrack in count(-1, -1):
+                    for backtrack in range(1, colno+1):
                         if row[colno-backtrack]:
-                            if row[colno-backtrack][0] == cell and row[colno-backtrack][2] == rowspan:
+                            if row[colno-backtrack][0] == cell and row[colno-backtrack][2] == rowspan and (colno % 2 == 1 or odd_combine):
                                 row[colno-backtrack][1] += colspan
                                 row[colno] = None
                             
@@ -64,8 +54,11 @@ def combine_repeats(grid, odd_vertical_combine=False):
                     pass
         
         return grid
-            
-    return combine_horizontally(combine_vertically(grid))
+        
+    def combine_vertically(grid):
+        return rotate_grid(combine_horizontally(rotate_grid(grid), odd_combine=odd_vertical_combine))
+        
+    return combine_horizontally(combine_vertically(convert(grid)))
 
 def grid(h_labels, v_labels, grid, wide=False):
     #h_labels = h_labels[:len(grid[0])]
