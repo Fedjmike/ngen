@@ -18,7 +18,7 @@ def td(content, rowspan=1, colspan=1, **fields):
 def tr(*content):
     return tag("tr", *content)
     
-def combine_repeats(grid, odd_vertical_combine=False):
+def combine_repeats(grid, odd_vertical_combine=True):
     def convert(grid):
         """Turns each cell into [contents, colspan, rowspan]"""
         return [[[cell, 1, 1] for cell in row] for row in grid]
@@ -145,7 +145,7 @@ def index():
                    for articles, adjectives in zip(process_emph(articleses), process_emph(adjectiveses))]
     
     def print_adjectives(adjectives, wide_tables=False):
-        def print_grids(_class, h_labels, v_labels, data, odd_vertical_combine=False):
+        def print_grids(_class, h_labels, v_labels, data, odd_vertical_combine=True):
             html = ""
             
             for adjs, title in data:
@@ -158,20 +158,19 @@ def index():
             return tag("div", html, _class="adjectives " + _class)
         
         html = print_grids("by-inflection", ["M", "N", "F", "P"], cases,
-                           zip(adjectives, inflection_classes))
+                           zip(adjectives, inflection_classes),
+                           odd_vertical_combine=False)
         
         # I x C x G => G x C x I
         html += print_grids("by-gender", inflection_classes, cases,
                             zip([zip(*x) for x in
                                  zip(*[zip(*x) for x in adjectives])],
-                                ["M", "N", "F", "P"]),
-                            odd_vertical_combine=True)
+                                ["M", "N", "F", "P"]))
         
         # I x C x G => C x I x G
         html += print_grids("by-case",
                             ["M", "N", "F", "P"], inflection_classes,
-                            zip(zip(*adjectives), cases),
-                            odd_vertical_combine=True)
+                            zip(zip(*adjectives), cases))
         
         return html
         
